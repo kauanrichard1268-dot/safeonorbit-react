@@ -1,12 +1,12 @@
 import React from "react";
 import {
   Globe2, Send, UserRound, Orbit, Satellite, RadioTower,
-  Menu, ChevronDown
+  Menu, ChevronDown, Timer, CircleDot, Workflow
 } from "lucide-react";
 
 const navItems = [
   ["SOBRE NÓS", "#sobre"],
-  ["PRODUTO", "#produto"],
+  ["COSMOS", "#cosmos"],
   ["IMPACTO", "#impacto"],
   ["MÍDIA", "#midia"],
   ["CONTATO", "#contato"],
@@ -96,6 +96,60 @@ function Founders() {
   );
 }
 
+
+function CosmosSection() {
+  const features = [
+    {
+      icon: <Timer size={25} strokeWidth={1.35} />,
+      status: "NOMINAL",
+      title: "Consciência Temporal",
+      description: "Processamento contínuo de dados orbitais para calcular probabilidade de colisão (Pc) em todos os regimes — LEO, MEO, GEO.",
+      detail: "Previsão com até 10 dias de antecedência",
+    },
+    {
+      icon: <CircleDot size={27} strokeWidth={1.35} />,
+      status: "ATIVO",
+      title: "Clareza no Caos",
+      description: "Painel operacional que prioriza automaticamente as conjunções mais críticas, filtrável por satélite, regime orbital ou janela de tempo. Apenas o sinal que importa, sem ruído.",
+      detail: "Interface para decisores técnicos",
+    },
+    {
+      icon: <Workflow size={25} strokeWidth={1.35} />,
+      status: "ON-LINE",
+      title: "Conectividade Integrada",
+      description: "API REST e webhooks conectam o COSMOS ao seu segmento terrestre, sistema LEOP ou ferramenta de dinâmica de voo existentes — sem substituir sua infraestrutura atual.",
+      detail: "Integração com stacks existentes",
+    },
+  ];
+
+  return (
+    <section className="cosmos-section" id="cosmos" aria-labelledby="cosmos-title">
+      <div className="cosmos-inner">
+        <div className="cosmos-heading">
+          <p className="eyebrow">PLATAFORMA COSMOS</p>
+          <h2 id="cosmos-title">Inteligência orbital em tempo<br className="desktop-break" /> real.</h2>
+          <p className="cosmos-description">
+            O COSMOS integra catálogos TLE, mensagens de dados de conjunção (CDM) e rastreamento proprietário para entregar inteligência de risco acionável — em qualquer altitude, em qualquer tipo de órbita.
+          </p>
+        </div>
+        <div className="cosmos-cards">
+          {features.map((feature) => (
+            <article className="cosmos-card" key={feature.title}>
+              <div className="cosmos-card-top">
+                <span className="cosmos-icon">{feature.icon}</span>
+                <span className="cosmos-status"><i />{feature.status}</span>
+              </div>
+              <h3>{feature.title}</h3>
+              <p className="cosmos-card-description">{feature.description}</p>
+              <div className="cosmos-card-detail"><span>•</span>{feature.detail}</div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function App() {
   return (
     <main>
@@ -117,6 +171,7 @@ function App() {
         </div>
         <FactCards />
       </section>
+      <CosmosSection />
       <footer className="page-footer" id="contato">
         <span><RadioTower size={13} /> SAFEONORBIT / SISTEMA DE MONITORAMENTO</span>
         <span id="midia">BRASÍLIA, BRASIL <span className="footer-dot">●</span> SSA</span>
