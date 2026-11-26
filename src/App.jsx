@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import useScrollReveal from './useScrollReveal.js'
+// LIVE1: './CosmosLiveDemo.jsx'  |  LIVE2: './CosmosLiveDemo2.jsx'
+import CosmosLiveDemo from './CosmosLiveDemo2.jsx'
 import logo from './assets/logo.png';
 import {
   ArrowDownRight, ArrowRight, ArrowUpRight, Menu, X, Orbit,
@@ -82,59 +84,13 @@ function Challenge() {
 }
 
 function TrackedObjects() {
-  const [eventos, setEventos] = useState([]);
-  const [carregando, setCarregando] = useState(true);
-
-  useEffect(() => {
-    const API_KEY = 'COLE_A_SUA_CHAVE_AQUI'; 
-    
-    fetch('https://api.safeonorbit.space/api/conjunctions/v1/events/?limit=5', {
-      method: 'GET',
-      headers: { 'X-Api-Key': API_KEY }
-    })
-      .then(resposta => resposta.json())
-      .then(dados => {
-        setEventos(dados.results || dados || []); 
-        setCarregando(false);
-      })
-      .catch(erro => {
-        console.error("Error fetching API:", erro);
-        setCarregando(false);
-      });
-  }, []);
-
   return (
     <section className="tracked-section" id="objetos">
       <div className="container tracked-inner">
         <Eyebrow>Orbital monitoring</Eyebrow>
         <h2>Tracked Events</h2>
         <p>Monitoring orbital events and close approaches to support safer space operations.</p>
-        
-        <div style={{ marginTop: '2rem', textAlign: 'left', background: '#0a0a0a', padding: '1rem', borderRadius: '8px' }}>
-          {carregando ? (
-            <p>Loading COSMOS data...</p>
-          ) : !Array.isArray(eventos) || eventos.length === 0 ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', background: '#0f172a', padding: '24px', borderRadius: '8px', borderLeft: '4px solid #10b981' }}>
-              <ShieldCheck size={40} color="#10b981" />
-              <div>
-                <h3 style={{ margin: '0 0 8px 0', fontSize: '1.25rem', color: '#f8fafc' }}>Orbit Secure</h3>
-                <p style={{ margin: 0, color: '#cbd5e1', lineHeight: '1.5' }}>
-                  No conjunction events are currently available in the forecast window. Check again soon for updated orbital information.
-                </p>
-              </div>
-            </div>
-          ) : (
-            <ul>
-              {eventos.map((evento, index) => (
-                <li key={index} style={{ marginBottom: '1rem', borderBottom: '1px solid #333', paddingBottom: '1rem' }}>
-                  <strong>Risk Level:</strong> {evento.risk_level} <br/>
-                  <strong>Approach Date:</strong> {evento.start_date} <br/>
-                  <strong>Min POC:</strong> {evento.min_poc}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <CosmosLiveDemo />
       </div>
     </section>
   );
