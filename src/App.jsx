@@ -1,3 +1,9 @@
+import ogloboMedia from './assets/media/oglobo.png';
+import tncMedia from './assets/media/tnc.png';
+import nexoMedia from './assets/media/nexo.png';
+import luisPhoto from './assets/team/luis.png'
+import victoriaPhoto from './assets/team/victoria.png'
+import marcosPhoto from './assets/team/marcos.png'
 import { useState } from 'react'
 import useScrollReveal from './useScrollReveal.js'
 // LIVE1: './CosmosLiveDemo.jsx'  |  LIVE2: './CosmosLiveDemo2.jsx'
@@ -194,28 +200,77 @@ function Technology() {
 }
 
 function Impact() {
-  return <section className="section impact-section" id="impacto"><div className="container impact-layout">
-    <div><Eyebrow>Our impact</Eyebrow><h2>Protecting the orbital environment is a <em>shared global responsibility.</em></h2></div>
-    <div className="impact-copy"><p>Space infrastructure supports essential services and connects people, businesses and societies around the world. As orbital activity expands, preserving the long-term usability of space becomes increasingly important.</p><p>By supporting Space Situational Awareness and more informed operational decisions, Safe on Orbit contributes to a safer and more sustainable space environment for current and future generations.</p><div className="impact-stat"><strong>10 days</strong><span>Updated planning horizon</span></div></div>
-  </div></section>
+  return (
+    <section className="section impact-section" id="impacto">
+      <div className="container impact-layout">
+        <div className="impact-copy">
+          <Eyebrow>Our impact</Eyebrow>
+          <h2>A safer orbit. <em>A shared responsibility.</em></h2>
+          <p>Space connects our world. Through orbital intelligence, we help protect it for generations to come.</p>
+          <div className="impact-stat"><strong>10 days</strong><span>Updated planning horizon</span></div>
+        </div>
+        <div className="impact-visual">
+          <div className="impact-earth" role="img" aria-label="Earth at night photographed from the International Space Station" />
+        </div>
+      </div>
+    </section>
+  )
 }
 
-const team = ['Luis Felipe Alves de Oliveira', 'Victoria Martins Costa', 'Marcos Vinícius Gomes de Matos', 'Thiago Galbiatti Vespa']
+const team = [
+  { name: 'Luis Felipe Alves de Oliveira', photo: luisPhoto },
+  { name: 'Victoria Martins Costa', photo: victoriaPhoto },
+  { name: 'Marcos Vinícius Gomes de Matos', photo: marcosPhoto },
+  { name: 'Thiago Galbiatti Vespa', photo: null },
+]
+
 function Team() {
-  return <section className="section team-section" id="equipe"><div className="container"><div className="team-heading"><div><Eyebrow>People behind the mission</Eyebrow><h2>Meet our <em>team.</em></h2></div><p>Different skills, one shared commitment to a safer orbital environment.</p></div>
-    <div className="team-grid">{team.map((name, i) => <article className="team-card" key={name}><div className="team-avatar"><Users size={27} /></div><span>0{i + 1} / SAFE ON ORBIT</span><h3>{name}</h3></article>)}</div>
-  </div></section>
+  return (
+    <section className="section team-section" id="equipe">
+      <div className="container">
+        <div className="team-heading">
+          <div><Eyebrow>People behind the mission</Eyebrow><h2>Meet our <em>team.</em></h2></div>
+          <p>Different skills, one shared commitment to a safer orbital environment.</p>
+        </div>
+        <div className="team-grid">
+          {team.map(({ name, photo }, i) => (
+            <article className="team-card" key={name}>
+              <div className="team-photo">
+                {photo ? <img src={photo} alt={name} loading="lazy" width="640" height="760" /> : <Users size={48} aria-hidden="true" />}
+              </div>
+              <div className="team-info">
+                <span>0{i + 1} / SAFE ON ORBIT</span>
+                <h3>{name}</h3>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
 }
+
+const mediaStories = [
+  { source: 'O Globo', title: 'Space debris turns Earth’s orbit into a geopolitical minefield.', date: 'Jan 26, 2026', image: ogloboMedia },
+  { source: 'Rede TNC', title: 'Brazilian startup creates anti-collision system for satellites.', date: 'Jan 15, 2026', image: tncMedia },
+  { source: 'Nexo Jornal', title: 'Brazilian startup develops technology to prevent collisions in space.', date: 'Jan 5, 2026', image: nexoMedia },
+]
 
 function Updates() {
-  return <section className="section updates-section" id="eventos"><div className="container"><div className="updates-heading"><div><Eyebrow>Events & research</Eyebrow><h2>Events & <em>technical papers.</em></h2></div><p>Follow Safe On Orbit's participation in the space community and explore technical contributions related to space safety and Space Situational Awareness.</p></div>
-    <div className="updates-grid"><article className="update-placeholder"><span className="update-icon"><CalendarDays /></span><div><strong>Events coming soon</strong><p>Event dates, participation details and announcements will be published here.</p></div></article>
-    <article className="update-placeholder"><span className="update-icon"><FileText /></span><div><strong>Technical papers coming soon</strong><p>Technical documents and scientific publications will be listed here as they become available.</p></div></article></div>
-  </div></section>
+  return <section className="section updates-section" id="eventos">
+    <div className="container">
+      <div className="updates-heading"><div><Eyebrow>Media & research</Eyebrow><h2>Beyond <em>the orbit.</em></h2></div><p>Our presence in the media and contributions to space safety.</p></div>
+      <div className="media-grid">{mediaStories.map(story => <article className="media-story" key={story.source}>
+        <div className="media-image"><img src={story.image} alt={`Article preview — ${story.source}`} loading="lazy" /></div>
+        <span className="media-source">{story.source}</span><h3>{story.title}</h3><span className="media-date">{story.date}</span>
+      </article>)}</div>
+      <div className="media-footer"><a href="https://safeonorbit.space/" target="_blank" rel="noopener noreferrer">More news <ArrowUpRight size={15} /></a><div className="media-pending"><span>Events · Coming soon</span><span>Technical papers · Coming soon</span></div></div>
+    </div>
+  </section>
 }
 
 function Contact() {
-  return <section className="contact-section" id="contato"><div className="container contact-inner"><div><Eyebrow>Get in touch</Eyebrow><h2>The future of space is collective. <em>Let's make it safer.</em></h2><p>Contact our team to learn more about our solutions and explore opportunities for collaboration.</p></div><a className="button button-light" href={`mailto:${EMAIL}`}>Contact our team <ArrowUpRight size={18} /></a><div className="contact-orbit"><Orbit size={170} strokeWidth={0.6} /></div></div></section>
+  return <section className="contact-section" id="contato"><div className="container contact-inner"><div><Eyebrow>Get in touch</Eyebrow><h2>The future of space is collective.<em>Let's make it safer.</em></h2></div><a className="button button-light" href={`mailto:${EMAIL}`}>Contact our team <ArrowUpRight size={18} /></a></div></section>
 }
 
 function Footer() {
