@@ -1,0 +1,48 @@
+/* Ajustes para idiomas escritos da direita para a esquerda (árabe).
+   Só se aplicam quando o <html> recebe dir="rtl" (feito pelo LanguageContext). */
+
+/* Fonte com suporte a caracteres árabes (Maven Pro não tem). */
+[dir="rtl"] body,
+[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3,
+[dir="rtl"] button, [dir="rtl"] select {
+  font-family: 'Cairo', 'Maven Pro', sans-serif;
+}
+
+/* Espaçamento entre letras separa as letras árabes, que são ligadas. */
+[dir="rtl"] body * { letter-spacing: 0 !important; }
+
+/* Textos que estavam fixos à esquerda passam a seguir a direção do idioma. */
+[dir="rtl"] .metrics-row,
+[dir="rtl"] .cl-console { text-align: right; }
+
+/* Setas apontam para o outro lado. */
+[dir="rtl"] .button svg,
+[dir="rtl"] .text-link svg,
+[dir="rtl"] .nav-cta svg,
+[dir="rtl"] .media-footer a svg,
+[dir="rtl"] .check-list svg { transform: scaleX(-1); }
+
+/* Seta entre os cards de "Our approach". */
+[dir="rtl"] .technology-section .process-card:not(:last-child)::after {
+  right: auto; left: 0; transform: translateX(5px) rotate(-135deg);
+}
+
+/* Demo COSMOS: a cena e as escalas numéricas continuam da esquerda para a direita. */
+[dir="rtl"] .cl-scene,
+[dir="rtl"] .cl2-scene,
+[dir="rtl"] .cl-gauge-track,
+[dir="rtl"] .cl-gauge-scale,
+[dir="rtl"] .cl-countdown-row { direction: ltr; }
+[dir="rtl"] .cl-countdown-row { justify-content: flex-end; }
+
+/* Divisórias da faixa de informações do LIVE2 trocam de lado. */
+[dir="rtl"] .cl2-cell + .cl2-cell { border-left: 0; border-right: 1px solid var(--cl-line); }
+[dir="rtl"] .cl2-strip .cl-metrics > div:nth-child(odd) { border-right: 0; border-left: 1px solid var(--cl-line); }
+[dir="rtl"] .cl2-bar { padding: 10px 20px 10px 14px; }
+@media (max-width: 1100px) {
+  [dir="rtl"] .cl2-cell:nth-child(3) { border-right: 0; }
+}
+@media (max-width: 680px) {
+  [dir="rtl"] .cl2-cell + .cl2-cell { border-right: 0; }
+  [dir="rtl"] .cl2-bar { padding: 12px 14px; }
+}

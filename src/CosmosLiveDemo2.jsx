@@ -3,8 +3,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Pause, Play, ShieldCheck, TriangleAlert } from 'lucide-react'
 import {
-  useCosmosEvents, riskOf, formatPoc, formatUtc, shortName, Countdown, PocGauge,
+  useCosmosEvents, riskOf, formatPoc, shortName, Countdown, PocGauge,
 } from './CosmosLiveDemo.jsx'
+import { useI18n } from './i18n/LanguageContext.jsx'
 import earthTexture from './assets/earth-texture.jpg'
 import './cosmos-live2.css'
 
@@ -113,6 +114,10 @@ function Earth({ L, earthRef }) {
 /* --------------------------------------------------------------- cena */
 
 function OrbitScene({ event, playing }) {
+  const { t } = useI18n()
+  // Os rótulos da fase ficam num ref: trocar de idioma não reinicia a animação.
+  const phaseLabels = useRef({})
+  phaseLabels.current = { closest: t('demo.closest'), approaching: t('demo.approaching'), receding: t('demo.receding') }
   const wrap = useRef(null)
   const [vw, setVw] = useState(900)
 
@@ -174,7 +179,8 @@ function OrbitScene({ event, playing }) {
 
       const minutes = Math.round(Math.abs(tau) * MIN_PER_SEC)
       clock.current.textContent = minutes === 0 ? 'TCA' : `${tau < 0 ? 'T−' : 'T+'}${minutes} min`
-      phase.current.textContent = Math.abs(tau) <= 1.6 ? 'Closest approach' : tau < 0 ? 'Approaching' : 'Receding'
+      const labels = phaseLabels.current
+      phase.current.textContent = Math.abs(tau) <= 1.6 ? labels.closest : tau < 0 ? labels.approaching : labels.receding
     }
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -215,7 +221,7 @@ function OrbitScene({ event, playing }) {
         viewBox={`0 0 ${vw} ${VH}`}
         preserveAspectRatio="xMidYMid meet"
         role="img"
-        aria-label={`Simulated replay of ${event.primary_satellite_name} and ${event.secondary_satellite_name} passing ${event.miss_distance_km} km apart.`}
+        aria-label={t('demo.sceneAria', { a: event.primary_satellite_name, b: event.secondary_satellite_name, km: event.miss_distance_km })}
         style={{ '--risk': risk.color }}
       >
         <defs>
@@ -261,7 +267,7 @@ function OrbitScene({ event, playing }) {
         </g>
         <g className="cl-callout" transform={`translate(${px - 20} ${py - 30})`} textAnchor="end">
           <text className="cl-callout-value">{Number(event.miss_distance_km).toFixed(1)} km</text>
-          <text className="cl-callout-label" y="13">MISS DISTANCE</text>
+          <text className="cl-callout-label" y="13">{t('demo.missLabel')}</text>
         </g>
 
         <polyline ref={trail1} className="cl-trail cl-trail-primary" />
@@ -273,7 +279,7 @@ function OrbitScene({ event, playing }) {
 
         <text ref={phase} className="cl-phase" x="18" y={VH - 34} />
         <text ref={clock} className="cl-clock" x="18" y={VH - 16} />
-        <text className="cl-sim" x={vw - 18} y={VH - 16} textAnchor="end">SIMULATED REPLAY · NOT TO SCALE</text>
+        <text className="cl-sim" x={vw - 18} y={VH - 16} textAnchor="end">{t('demo.sim')}</text>
       </svg>
     </div>
   )
@@ -282,6 +288,7 @@ function OrbitScene({ event, playing }) {
 /* ------------------------------------------------------------ principal */
 
 export default function CosmosLiveDemo2() {
+  const { t, locale } = useI18n()
   const { status, events } = useCosmosEvents()
   const [index, setIndex] = useState(0)
   const [autoCycle, setAutoCycle] = useState(true)
@@ -297,7 +304,7 @@ export default function CosmosLiveDemo2() {
     return (
       <div className="cl-console cl2-console cl-state">
         <div className="cl-radar" aria-hidden="true" />
-        <p>Querying COSMOS for upcoming conjunctions…</p>
+        <p>{t('demo.loading')}</p>
       </div>
     )
   }
@@ -306,7 +313,7 @@ export default function CosmosLiveDemo2() {
     return (
       <div className="cl-console cl2-console cl-state cl-state-error" role="alert">
         <TriangleAlert size={28} aria-hidden="true" />
-        <p>Unable to load COSMOS data right now. Please try again later.</p>
+        <p>{t('demo.error')}</p>
       </div>
     )
   }
@@ -316,8 +323,8 @@ export default function CosmosLiveDemo2() {
       <div className="cl-console cl2-console cl-state cl-state-safe">
         <ShieldCheck size={36} aria-hidden="true" />
         <div>
-          <h3>Orbit Secure</h3>
-          <p>No conjunction events are currently available in the forecast window. Check again soon for updated orbital information.</p>
+          <h3>{t('demo.safeTitle')}</h3>
+          <p>{t('demo.safeBody')}</p>
         </div>
       </div>
     )
@@ -325,15 +332,16 @@ export default function CosmosLiveDemo2() {
 
   const event = events[Math.min(index, events.length - 1)]
   const risk = riskOf(event.risk_level)
-  const poc = formatPoc(event.probability_of_collision)
+  const poc = formatPoc(event.probability_of_collision, locale)
   const a = shortName(event.primary_satellite_name)
   const b = shortName(event.secondary_satellite_name)
+  const km = <strong>{Number(event.miss_distance_km).toFixed(1)} km</strong>
 
   return (
     <div className="cl-console cl2-console">
       <div className="cl2-bar">
-        <span className="cl-live"><span className="status-dot" />LIVE · COSMOS API</span>
-        <div className="cl2-tabs" role="tablist" aria-label="Detected conjunctions">
+        <span className="cl-live"><span className="status-dot" />{t('demo.live')}</span>
+        <div className="cl2-tabs" role="tablist" aria-label={t('demo.tabsAria')}>
           {events.map((ev, i) => (
             <button
               key={ev.id}
@@ -354,7 +362,7 @@ export default function CosmosLiveDemo2() {
           type="button"
           className="cl-icon-btn"
           onClick={() => setPlaying(p => !p)}
-          aria-label={playing ? 'Pause animation' : 'Play animation'}
+          aria-label={playing ? t('demo.pause') : t('demo.play')}
         >
           {playing ? <Pause size={15} /> : <Play size={15} />}
         </button>
@@ -364,15 +372,16 @@ export default function CosmosLiveDemo2() {
 
       <div className="cl2-strip" style={{ '--risk': risk.color }} aria-live="polite" key={`info-${event.id}`}>
         <div className="cl2-cell cl2-identity">
-          <span className="cl-badge"><TriangleAlert size={13} aria-hidden="true" />{risk.label}</span>
+          <span className="cl-badge"><TriangleAlert size={13} aria-hidden="true" />{t(`demo.risk.${risk.key}`)}</span>
           <h3>
             <span><span className="cl-dot cl-dot-primary" />{event.primary_satellite_name}</span>
             <i>×</i>
             <span><span className="cl-dot cl-dot-secondary" />{event.secondary_satellite_name}</span>
           </h3>
           <p className="cl-story">
-            {b} passes <strong>{Number(event.miss_distance_km).toFixed(1)} km</strong> from {a}
-            {poc && <> — about <strong>1 in {poc.odds}</strong> chance of collision</>}.
+            {poc
+              ? t('demo.storyOdds', { a, b, km, odds: <strong>{t('demo.oneIn', { n: poc.odds })}</strong> })
+              : t('demo.story', { a, b, km })}
           </p>
         </div>
 
@@ -381,10 +390,10 @@ export default function CosmosLiveDemo2() {
         </div>
 
         <dl className="cl2-cell cl-metrics">
-          <div><dt>Miss distance</dt><dd>{Number(event.miss_distance_km).toFixed(2)} <small>km</small></dd></div>
-          <div><dt>Radial sep.</dt><dd>{Math.round(Number(event.radial_distance_m))} <small>m</small></dd></div>
-          <div><dt>NORAD IDs</dt><dd className="cl-small">{event.primary_satellite_norad} · {event.secondary_satellite_norad}</dd></div>
-          <div><dt>Source</dt><dd className="cl-small">{event.data_source} · {event.status}</dd></div>
+          <div><dt>{t('demo.miss')}</dt><dd>{Number(event.miss_distance_km).toFixed(2)} <small>km</small></dd></div>
+          <div><dt>{t('demo.radial')}</dt><dd>{Math.round(Number(event.radial_distance_m))} <small>m</small></dd></div>
+          <div><dt>{t('demo.norad')}</dt><dd className="cl-small">{event.primary_satellite_norad} · {event.secondary_satellite_norad}</dd></div>
+          <div><dt>{t('demo.source')}</dt><dd className="cl-small">{event.data_source} · {event.status}</dd></div>
         </dl>
 
         <div className="cl2-cell">

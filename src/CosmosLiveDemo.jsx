@@ -1,15 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Pause, Play, ShieldCheck, TriangleAlert } from 'lucide-react'
+import { useI18n } from './i18n/LanguageContext.jsx'
 import './cosmos-live.css'
 
 const API_URL = 'https://api.safeonorbit.space/api/conjunctions/v1/events/?limit=5'
 
+// key = chave usada na tradução (demo.risk.HIGH etc.)
 const RISK = {
-  HIGH: { label: 'High risk', color: '#ff4d4d' },
-  MEDIUM: { label: 'Medium risk', color: '#fe7b2b' },
-  LOW: { label: 'Low risk', color: '#35b9e8' },
+  HIGH: { key: 'HIGH', label: 'High risk', color: '#ff4d4d' },
+  MEDIUM: { key: 'MEDIUM', label: 'Medium risk', color: '#fe7b2b' },
+  LOW: { key: 'LOW', label: 'Low risk', color: '#35b9e8' },
 }
-export const riskOf = level => RISK[String(level).toUpperCase()] || { label: level || 'Unknown risk', color: '#9eafc4' }
+export const riskOf = level => RISK[String(level).toUpperCase()] || { key: 'UNKNOWN', label: level || 'Unknown risk', color: '#9eafc4' }
 
 /* ---------------------------------------------------------------- dados */
 
@@ -51,21 +53,21 @@ export function useCosmosEvents() {
 
 /* ----------------------------------------------------------- formatação */
 
-export function formatPoc(value) {
+export function formatPoc(value, locale = 'en-US') {
   const p = Number(value)
   if (!(p > 0)) return null
   const exp = Math.floor(Math.log10(p))
   return {
     mantissa: (p / 10 ** exp).toFixed(2),
     exp,
-    odds: Number((1 / p).toPrecision(3)).toLocaleString('en-US'),
+    odds: Number((1 / p).toPrecision(3)).toLocaleString(locale),
     // posição numa escala logarítmica de 10⁻⁷ a 10⁻²
     gauge: Math.min(1, Math.max(0, (Math.log10(p) + 7) / 5)),
   }
 }
 
-export function formatUtc(iso) {
-  return new Date(iso).toLocaleString('en-US', {
+export function formatUtc(iso, locale = 'en-US') {
+  return new Date(iso).toLocaleString(locale, {
     timeZone: 'UTC', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false,
   }) + ' UTC'
 }
@@ -297,6 +299,7 @@ function useNow(interval = 1000) {
 }
 
 export function Countdown({ iso }) {
+  const { t, locale } = useI18n()
   const now = useNow()
   let ms = new Date(iso).getTime() - now
   const past = ms < 0
@@ -307,32 +310,34 @@ export function Countdown({ iso }) {
     [Math.floor((ms % 36e5) / 6e4), 'min'],
     [Math.floor((ms % 6e4) / 1e3), 'sec'],
   ]
+  const title = past ? t('demo.sinceTca') : t('demo.untilTca')
   return (
-    <div className="cl-countdown" aria-label={past ? 'Time since closest approach' : 'Time until closest approach'}>
-      <span className="cl-k">{past ? 'Since closest approach' : 'Time to closest approach'}</span>
+    <div className="cl-countdown" aria-label={title}>
+      <span className="cl-k">{title}</span>
       <div className="cl-countdown-row">
         {parts.map(([v, u]) => (
-          <span key={u}><b>{String(v).padStart(2, '0')}</b><small>{u}</small></span>
+          <span key={u}><b>{String(v).padStart(2, '0')}</b><small>{t(`demo.${u}`)}</small></span>
         ))}
       </div>
-      <span className="cl-sub">{formatUtc(iso)}</span>
+      <span className="cl-sub">{formatUtc(iso, locale)}</span>
     </div>
   )
 }
 
 export function PocGauge({ poc }) {
+  const { t } = useI18n()
   if (!poc) return null
   return (
     <div className="cl-gauge">
       <div className="cl-gauge-head">
-        <span className="cl-k">Probability of collision</span>
+        <span className="cl-k">{t('demo.poc')}</span>
         <span className="cl-gauge-value">{poc.mantissa} × 10<sup>{poc.exp}</sup></span>
       </div>
       <div className="cl-gauge-track">
         <span className="cl-gauge-fill" style={{ width: `${poc.gauge * 100}%` }} />
         <span className="cl-gauge-threshold" style={{ left: '60%' }} title="10⁻⁴" />
       </div>
-      <div className="cl-gauge-scale"><span>10<sup>−7</sup></span><span style={{ left: '60%' }}>10<sup>−4</sup> threshold</span><span>10<sup>−2</sup></span></div>
+      <div className="cl-gauge-scale"><span>10<sup>−7</sup></span><span style={{ left: '60%' }}>10<sup>−4</sup> {t('demo.threshold')}</span><span>10<sup>−2</sup></span></div>
     </div>
   )
 }

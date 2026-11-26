@@ -6,41 +6,43 @@ import victoriaPhoto from './assets/team/victoria.png'
 import marcosPhoto from './assets/team/marcos.png'
 import { useState } from 'react'
 import useScrollReveal from './useScrollReveal.js'
+import { LANGUAGES, useI18n } from './i18n/LanguageContext.jsx'
 // LIVE1: './CosmosLiveDemo.jsx'  |  LIVE2: './CosmosLiveDemo2.jsx'
 import CosmosLiveDemo from './CosmosLiveDemo2.jsx'
 import logo from './assets/logo.png';
 import {
-  ArrowDownRight, ArrowRight, ArrowUpRight, Menu, X, Orbit,
+  ArrowDownRight, ArrowRight, ArrowUpRight, Menu, X,
   Radar, ShieldCheck, Satellite, Activity, Target, ChevronRight,
-  Mail, Globe2, Users, CalendarDays, FileText, Linkedin, Instagram
+  Mail, Globe2, Users, Linkedin, Instagram
 } from 'lucide-react'
 
 const EMAIL = 'safeonorbit@safeonorbit.space'
+
+// [chave da tradução, âncora da seção]
 const navItems = [
-  ['Home', '#inicio'], ['Challenge', '#solucao'], ['Tracked Events', '#objetos'], ['COSMOS & Technology', '#cosmos'],
-  ['Impact', '#impacto'], ['Team', '#equipe'], ['Events & Papers', '#eventos'],
+  ['nav.home', '#inicio'], ['nav.challenge', '#solucao'], ['nav.tracked', '#objetos'], ['nav.cosmos', '#cosmos'],
+  ['nav.impact', '#impacto'], ['nav.team', '#equipe'], ['nav.events', '#eventos'],
 ]
-const languages = ['English', 'العربية', 'Español', 'Français', 'Português']
 
 function Header() {
+  const { t, lang, setLang } = useI18n()
   const [open, setOpen] = useState(false)
-  const [language, setLanguage] = useState('English')
   return (
     <header className="site-header">
-      <a className="brand" href="#inicio" aria-label="Safe on Orbit — home">
-        <span className="brand-mark"><img src={logo} alt="Logo da empresa" width="30" /></span>
+      <a className="brand" href="#inicio" aria-label={t('header.homeAria')}>
+        <span className="brand-mark"><img src={logo} alt={t('header.logoAlt')} width="30" /></span>
         <span className="brand-name">SAFE <span>ON</span> ORBIT</span>
       </a>
-      <nav className={open ? 'nav nav-open' : 'nav'} id="main-navigation" aria-label="Main navigation">
+      <nav className={open ? 'nav nav-open' : 'nav'} id="main-navigation" aria-label={t('header.mainNav')}>
         <div className="nav-links">
-        {navItems.map(([label, href]) => <a key={label} href={href} onClick={() => setOpen(false)}>{label === 'COSMOS & Technology' ? 'COSMOS' : label}</a>)}
+        {navItems.map(([key, href]) => <a key={key} href={href} onClick={() => setOpen(false)}>{t(key === 'nav.cosmos' ? 'nav.cosmosShort' : key)}</a>)}
         </div>
         <div className="nav-controls">
-        <label className="language-picker" aria-label="Choose language"><Globe2 size={15} /><select value={language} onChange={event => setLanguage(event.target.value)} aria-label="Language">{languages.map(item => <option key={item} value={item}>{item}</option>)}</select></label>
-        <a className="nav-cta" href={`mailto:${EMAIL}`} onClick={() => setOpen(false)}>Contact <ArrowUpRight size={16} /></a>
+        <label className="language-picker" aria-label={t('header.chooseLang')}><Globe2 size={15} /><select value={lang} onChange={event => setLang(event.target.value)} aria-label={t('header.chooseLang')}>{LANGUAGES.map(item => <option key={item.code} value={item.code}>{item.label}</option>)}</select></label>
+        <a className="nav-cta" href={`mailto:${EMAIL}`} onClick={() => setOpen(false)}>{t('header.contact')} <ArrowUpRight size={16} /></a>
         </div>
       </nav>
-      <button className="menu-toggle" onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="main-navigation">
+      <button className="menu-toggle" onClick={() => setOpen(!open)} aria-label={open ? t('header.closeMenu') : t('header.openMenu')} aria-expanded={open} aria-controls="main-navigation">
         {open ? <X /> : <Menu />}
       </button>
     </header>
@@ -50,52 +52,55 @@ function Header() {
 function Eyebrow({ children }) { return <div className="eyebrow"><span />{children}</div> }
 
 function Hero() {
+  const { t } = useI18n()
   return (
     <section className="hero" id="inicio">
       <div className="hero-bg" /><div className="hero-grid" />
       <div className="hero-content container">
-        <Eyebrow>Space Situational Awareness</Eyebrow>
-        <h1>Towards a <em>Free-Collision</em> Cosmos</h1>
-        <p className="hero-copy">Advanced orbital intelligence for safer and more sustainable space operations.</p>
+        <Eyebrow>{t('hero.eyebrow')}</Eyebrow>
+        <h1>{t('hero.titleBefore')}<em>{t('hero.titleEm')}</em>{t('hero.titleAfter')}</h1>
+        <p className="hero-copy">{t('hero.copy')}</p>
         <div className="hero-actions">
-          <a className="button button-primary" href="#cosmos">Discover COSMOS <ArrowRight size={17} /></a>
-          <a className="button button-ghost" href={`mailto:${EMAIL}`}>Contact Us <ArrowDownRight size={17} /></a>
+          <a className="button button-primary" href="#cosmos">{t('hero.discover')} <ArrowRight size={17} /></a>
+          <a className="button button-ghost" href={`mailto:${EMAIL}`}>{t('hero.contactUs')} <ArrowDownRight size={17} /></a>
         </div>
-        <div className="hero-note"><span className="status-dot" />The first company exclusively dedicated to SSA</div>
+        <div className="hero-note"><span className="status-dot" />{t('hero.note')}</div>
       </div>
-      <div className="orbit-annotation annotation-one"><span>01 / SPACE SAFETY</span><i /></div>
-      <div className="orbit-annotation annotation-two"><i /><span>EARTH ORBIT</span></div>
-      <div className="hero-bottom container"><span>SPACE SAFETY · INTELLIGENCE · SUSTAINABILITY</span><a href="#solucao" aria-label="Scroll to learn about the challenge"><ArrowDownRight size={20} /></a></div>
+      <div className="orbit-annotation annotation-one"><span>{t('hero.annotation1')}</span><i /></div>
+      <div className="orbit-annotation annotation-two"><i /><span>{t('hero.annotation2')}</span></div>
+      <div className="hero-bottom container"><span>{t('hero.bottom')}</span><a href="#solucao" aria-label={t('hero.scrollAria')}><ArrowDownRight size={20} /></a></div>
     </section>
   )
 }
 
 function Challenge() {
+  const { t } = useI18n()
   return (
     <section className="section challenge-section" id="solucao">
       <div className="container challenge-layout">
-        <div className="section-intro"><Eyebrow>The orbital challenge</Eyebrow><h2>Space is getting busier. <em>Safety must evolve with it.</em></h2></div>
+        <div className="section-intro"><Eyebrow>{t('challenge.eyebrow')}</Eyebrow><h2>{t('challenge.titleA')} <em>{t('challenge.titleEm')}</em></h2></div>
         <div className="challenge-copy">
-          <p>A crowded orbit demands smarter decisions. We help operators anticipate risks and prevent collisions.</p>
-          <a className="text-link" href="#tecnologia">Turning data into decisions <ArrowRight size={16} /></a>
+          <p>{t('challenge.copy')}</p>
+          <a className="text-link" href="#tecnologia">{t('challenge.link')} <ArrowRight size={16} /></a>
         </div>
       </div>
       <div className="container metrics-row">
-        <div className="metric"><span className="metric-icon"><Radar /></span><div><strong>Monitor</strong><p>Track orbital objects.</p></div></div>
-        <div className="metric"><span className="metric-icon"><Activity /></span><div><strong>Anticipate</strong><p>Identify collision risks.</p></div></div>
-        <div className="metric"><span className="metric-icon"><ShieldCheck /></span><div><strong>Decide</strong><p>Support safer operations.</p></div></div>
+        <div className="metric"><span className="metric-icon"><Radar /></span><div><strong>{t('challenge.m1t')}</strong><p>{t('challenge.m1d')}</p></div></div>
+        <div className="metric"><span className="metric-icon"><Activity /></span><div><strong>{t('challenge.m2t')}</strong><p>{t('challenge.m2d')}</p></div></div>
+        <div className="metric"><span className="metric-icon"><ShieldCheck /></span><div><strong>{t('challenge.m3t')}</strong><p>{t('challenge.m3d')}</p></div></div>
       </div>
     </section>
   )
 }
 
 function TrackedObjects() {
+  const { t } = useI18n()
   return (
     <section className="tracked-section" id="objetos">
       <div className="container tracked-inner">
-        <Eyebrow>Orbital monitoring</Eyebrow>
-        <h2>Tracked Events</h2>
-        <p>Monitoring orbital events and close approaches to support safer space operations.</p>
+        <Eyebrow>{t('tracked.eyebrow')}</Eyebrow>
+        <h2>{t('tracked.title')}</h2>
+        <p>{t('tracked.copy')}</p>
         <CosmosLiveDemo />
       </div>
     </section>
@@ -103,17 +108,18 @@ function TrackedObjects() {
 }
 
 function Cosmos() {
+  const { t } = useI18n()
   return (
     <section className="cosmos-section" id="cosmos">
       <div className="cosmos-image">
         <div className="image-caption">
           <span className="caption-line" />
-          ORBITAL ENVIRONMENT — OPERATIONAL VIEW
+          {t('cosmos.caption')}
         </div>
       </div>
 
       <div className="cosmos-content">
-        <Eyebrow>Our platform</Eyebrow>
+        <Eyebrow>{t('cosmos.eyebrow')}</Eyebrow>
 
         <div className="cosmos-wordmark">
           <span className="cosmos-symbol">
@@ -129,41 +135,26 @@ function Cosmos() {
         </div>
 
         <h2>
-          More insight.
-          <em>Safer decisions.</em>
+          {t('cosmos.titleA')}
+          <em>{t('cosmos.titleEm')}</em>
         </h2>
 
-        <p>
-          COSMOS combines orbital data and predictive analytics
-          to assess risks and support collision avoidance.
-        </p>
+        <p>{t('cosmos.copy')}</p>
 
         <ul className="check-list">
-          <li>
-            <span><ChevronRight size={16} /></span>
-            Conjunction analysis
-          </li>
-
-          <li>
-            <span><ChevronRight size={16} /></span>
-            Orbital risk assessment
-          </li>
-
-          <li>
-            <span><ChevronRight size={16} /></span>
-            Collision avoidance support
-          </li>
+          {['cosmos.li1', 'cosmos.li2', 'cosmos.li3'].map(key => (
+            <li key={key}>
+              <span><ChevronRight size={16} /></span>
+              {t(key)}
+            </li>
+          ))}
         </ul>
 
         <a className="button button-primary" href={`mailto:${EMAIL}`}>
-          Talk to our team <ArrowRight size={17} />
+          {t('cosmos.cta')} <ArrowRight size={17} />
         </a>
 
-        <p className="fine-print">
-          COSMOS supports decision-making. Maneuver assessment
-          and execution remain the responsibility of satellite
-          operators.
-        </p>
+        <p className="fine-print">{t('cosmos.fine')}</p>
       </div>
     </section>
   )
@@ -188,29 +179,31 @@ function ProcessIllustration({ number }) {
 }
 
 function Technology() {
+  const { t } = useI18n()
   const items = [
-    { number: '01', icon: <Satellite />, title: 'Orbital data', body: 'Integration of information about the positions and trajectories of space objects.' },
-    { number: '02', icon: <Radar />, title: 'Conjunction analysis', body: 'Identification of close approaches and assessment of scenarios that require attention.' },
-    { number: '03', icon: <Target />, title: 'Decision support', body: 'Organized information to support risk assessment and operational planning.' },
+    { number: '01', icon: <Satellite />, title: t('tech.i1t'), body: t('tech.i1b') },
+    { number: '02', icon: <Radar />, title: t('tech.i2t'), body: t('tech.i2b') },
+    { number: '03', icon: <Target />, title: t('tech.i3t'), body: t('tech.i3b') },
   ]
   return <section className="section technology-section" id="tecnologia"><div className="container">
-    <div className="tech-heading"><div><Eyebrow>Our approach</Eyebrow><h2>Orbital complexity.<br /><em>Operational clarity.</em></h2></div><p>From raw information to situational awareness: a data-driven approach to supporting safer space operations.</p></div>
+    <div className="tech-heading"><div><Eyebrow>{t('tech.eyebrow')}</Eyebrow><h2>{t('tech.titleA')}<br /><em>{t('tech.titleEm')}</em></h2></div><p>{t('tech.copy')}</p></div>
     <div className="process-grid">{items.map(item => <article className="process-card" key={item.number}><div className="process-top"><span>{item.number}</span><span className="process-icon">{item.icon}</span></div><ProcessIllustration number={item.number} /><h3>{item.title}</h3><p>{item.body}</p><div className="card-line" /></article>)}</div>
   </div></section>
 }
 
 function Impact() {
+  const { t } = useI18n()
   return (
     <section className="section impact-section" id="impacto">
       <div className="container impact-layout">
         <div className="impact-copy">
-          <Eyebrow>Our impact</Eyebrow>
-          <h2>A safer orbit. <em>A shared responsibility.</em></h2>
-          <p>Space connects our world. Through orbital intelligence, we help protect it for generations to come.</p>
-          <div className="impact-stat"><strong>10 days</strong><span>Updated planning horizon</span></div>
+          <Eyebrow>{t('impact.eyebrow')}</Eyebrow>
+          <h2>{t('impact.titleA')} <em>{t('impact.titleEm')}</em></h2>
+          <p>{t('impact.copy')}</p>
+          <div className="impact-stat"><strong>{t('impact.stat')}</strong><span>{t('impact.statLabel')}</span></div>
         </div>
         <div className="impact-visual">
-          <div className="impact-earth" role="img" aria-label="Earth at night photographed from the International Space Station" />
+          <div className="impact-earth" role="img" aria-label={t('impact.earthAria')} />
         </div>
       </div>
     </section>
@@ -225,12 +218,13 @@ const team = [
 ]
 
 function Team() {
+  const { t } = useI18n()
   return (
     <section className="section team-section" id="equipe">
       <div className="container">
         <div className="team-heading">
-          <div><Eyebrow>People behind the mission</Eyebrow><h2>Meet our <em>team.</em></h2></div>
-          <p>Different skills, one shared commitment to a safer orbital environment.</p>
+          <div><Eyebrow>{t('team.eyebrow')}</Eyebrow><h2>{t('team.titleA')}<em>{t('team.titleEm')}</em></h2></div>
+          <p>{t('team.copy')}</p>
         </div>
         <div className="team-grid">
           {team.map(({ name, photo }, i) => (
@@ -250,35 +244,40 @@ function Team() {
   )
 }
 
+// As datas ficam no formato ISO (ano-mês-dia) e são formatadas conforme o idioma escolhido.
 const mediaStories = [
-  { source: 'O Globo', title: 'Space debris turns Earth’s orbit into a geopolitical minefield.', date: 'Jan 26, 2026', image: ogloboMedia },
-  { source: 'Rede TNC', title: 'Brazilian startup creates anti-collision system for satellites.', date: 'Jan 15, 2026', image: tncMedia },
-  { source: 'Nexo Jornal', title: 'Brazilian startup develops technology to prevent collisions in space.', date: 'Jan 5, 2026', image: nexoMedia },
+  { source: 'O Globo', titleKey: 'media.story1', date: '2026-01-26', image: ogloboMedia },
+  { source: 'Rede TNC', titleKey: 'media.story2', date: '2026-01-15', image: tncMedia },
+  { source: 'Nexo Jornal', titleKey: 'media.story3', date: '2026-01-05', image: nexoMedia },
 ]
 
 function Updates() {
+  const { t, locale } = useI18n()
+  const formatDate = iso => new Date(`${iso}T00:00:00Z`).toLocaleDateString(locale, { timeZone: 'UTC', year: 'numeric', month: 'short', day: 'numeric' })
   return <section className="section updates-section" id="eventos">
     <div className="container">
-      <div className="updates-heading"><div><Eyebrow>Media & research</Eyebrow><h2>Beyond <em>the orbit.</em></h2></div><p>Our presence in the media and contributions to space safety.</p></div>
+      <div className="updates-heading"><div><Eyebrow>{t('media.eyebrow')}</Eyebrow><h2>{t('media.titleA')}<em>{t('media.titleEm')}</em></h2></div><p>{t('media.copy')}</p></div>
       <div className="media-grid">{mediaStories.map(story => <article className="media-story" key={story.source}>
-        <div className="media-image"><img src={story.image} alt={`Article preview — ${story.source}`} loading="lazy" /></div>
-        <span className="media-source">{story.source}</span><h3>{story.title}</h3><span className="media-date">{story.date}</span>
+        <div className="media-image"><img src={story.image} alt={t('media.previewAlt', { source: story.source })} loading="lazy" /></div>
+        <span className="media-source">{story.source}</span><h3>{t(story.titleKey)}</h3><span className="media-date">{formatDate(story.date)}</span>
       </article>)}</div>
-      <div className="media-footer"><a href="https://safeonorbit.space/" target="_blank" rel="noopener noreferrer">More news <ArrowUpRight size={15} /></a><div className="media-pending"><span>Events · Coming soon</span><span>Technical papers · Coming soon</span></div></div>
+      <div className="media-footer"><a href="https://safeonorbit.space/" target="_blank" rel="noopener noreferrer">{t('media.more')} <ArrowUpRight size={15} /></a><div className="media-pending"><span>{t('media.events')}</span><span>{t('media.papers')}</span></div></div>
     </div>
   </section>
 }
 
 function Contact() {
-  return <section className="contact-section" id="contato"><div className="container contact-inner"><div><Eyebrow>Get in touch</Eyebrow><h2>The future of space is collective.<em>Let's make it safer.</em></h2></div><a className="button button-light" href={`mailto:${EMAIL}`}>Contact our team <ArrowUpRight size={18} /></a></div></section>
+  const { t } = useI18n()
+  return <section className="contact-section" id="contato"><div className="container contact-inner"><div><Eyebrow>{t('contact.eyebrow')}</Eyebrow><h2>{t('contact.titleA')}<em>{t('contact.titleEm')}</em></h2></div><a className="button button-light" href={`mailto:${EMAIL}`}>{t('contact.cta')} <ArrowUpRight size={18} /></a></div></section>
 }
 
 function Footer() {
+  const { t } = useI18n()
   return <footer className="site-footer"><div className="container footer-main">
-    <div className="footer-brand-col"><a className="brand footer-brand" href="#inicio"><span className="brand-mark"><img src={logo} alt="Safe On Orbit logo" width="28" /></span><span className="brand-name">SAFE <span>ON</span> ORBIT</span></a><p>Towards a safer and more sustainable cosmos.</p></div>
-    <div className="footer-links"><strong>Explore</strong>{navItems.map(([label, href]) => <a key={label} href={href}>{label}</a>)}</div>
-    <div className="footer-links"><strong>Contact</strong><a href={`mailto:${EMAIL}`}><Mail size={15} />{EMAIL}</a><a href="https://www.linkedin.com/company/safe-on-orbit/" target="_blank" rel="noopener noreferrer" aria-label="Safe On Orbit on LinkedIn"><Linkedin size={15} aria-hidden="true" />LinkedIn</a><a href="https://www.instagram.com/safeonorbit/" target="_blank" rel="noopener noreferrer" aria-label="Safe On Orbit on Instagram"><Instagram size={15} aria-hidden="true" />Instagram</a></div>
-  </div><div className="container footer-bottom"><span>© {new Date().getFullYear()} Safe on Orbit. All rights reserved.</span><a href="#inicio">Back to top ↑</a></div></footer>
+    <div className="footer-brand-col"><a className="brand footer-brand" href="#inicio"><span className="brand-mark"><img src={logo} alt={t('header.logoAlt')} width="28" /></span><span className="brand-name">SAFE <span>ON</span> ORBIT</span></a><p>{t('footer.tagline')}</p></div>
+    <div className="footer-links"><strong>{t('footer.explore')}</strong>{navItems.map(([key, href]) => <a key={key} href={href}>{t(key)}</a>)}</div>
+    <div className="footer-links"><strong>{t('footer.contact')}</strong><a href={`mailto:${EMAIL}`}><Mail size={15} />{EMAIL}</a><a href="https://www.linkedin.com/company/safe-on-orbit/" target="_blank" rel="noopener noreferrer" aria-label={t('footer.linkedinAria')}><Linkedin size={15} aria-hidden="true" />LinkedIn</a><a href="https://www.instagram.com/safeonorbit/" target="_blank" rel="noopener noreferrer" aria-label={t('footer.instagramAria')}><Instagram size={15} aria-hidden="true" />Instagram</a></div>
+  </div><div className="container footer-bottom"><span>© {new Date().getFullYear()} Safe on Orbit. {t('footer.rights')}</span><a href="#inicio">{t('footer.top')}</a></div></footer>
 }
 
 export default function App() {
