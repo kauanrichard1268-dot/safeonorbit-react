@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import useScrollReveal from './useScrollReveal.js'
 import logo from './assets/logo.png';
 import {
   ArrowDownRight, ArrowRight, ArrowUpRight, Menu, X, Orbit,
@@ -22,12 +23,16 @@ function Header() {
         <span className="brand-mark"><img src={logo} alt="Logo da empresa" width="30" /></span>
         <span className="brand-name">SAFE <span>ON</span> ORBIT</span>
       </a>
-      <nav className={open ? 'nav nav-open' : 'nav'} aria-label="Main navigation">
-        {navItems.map(([label, href]) => <a key={label} href={href} onClick={() => setOpen(false)}>{label}</a>)}
+      <nav className={open ? 'nav nav-open' : 'nav'} id="main-navigation" aria-label="Main navigation">
+        <div className="nav-links">
+        {navItems.map(([label, href]) => <a key={label} href={href} onClick={() => setOpen(false)}>{label === 'COSMOS & Technology' ? 'COSMOS' : label}</a>)}
+        </div>
+        <div className="nav-controls">
         <label className="language-picker" aria-label="Choose language"><Globe2 size={15} /><select value={language} onChange={event => setLanguage(event.target.value)} aria-label="Language">{languages.map(item => <option key={item} value={item}>{item}</option>)}</select></label>
         <a className="nav-cta" href={`mailto:${EMAIL}`} onClick={() => setOpen(false)}>Contact <ArrowUpRight size={16} /></a>
+        </div>
       </nav>
-      <button className="menu-toggle" onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open}>
+      <button className="menu-toggle" onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="main-navigation">
         {open ? <X /> : <Menu />}
       </button>
     </header>
@@ -43,7 +48,7 @@ function Hero() {
       <div className="hero-content container">
         <Eyebrow>Space Situational Awareness</Eyebrow>
         <h1>Towards a <em>Free-Collision</em> Cosmos</h1>
-        <p className="hero-copy">Space is becoming increasingly crowded. Safe on Orbit develops solutions to improve Space Situational Awareness (SSA), support collision avoidance and contribute to a safer, more sustainable orbital environment.</p>
+        <p className="hero-copy">Advanced orbital intelligence for safer and more sustainable space operations.</p>
         <div className="hero-actions">
           <a className="button button-primary" href="#cosmos">Discover COSMOS <ArrowRight size={17} /></a>
           <a className="button button-ghost" href={`mailto:${EMAIL}`}>Contact Us <ArrowDownRight size={17} /></a>
@@ -63,15 +68,14 @@ function Challenge() {
       <div className="container challenge-layout">
         <div className="section-intro"><Eyebrow>The orbital challenge</Eyebrow><h2>Space is getting busier. <em>Safety must evolve with it.</em></h2></div>
         <div className="challenge-copy">
-          <p>Satellites are essential to communication, navigation, Earth observation and countless services. As the number of objects in orbit grows, space operations become more complex and the risk of dangerous close approaches increases.</p>
-          <p>Safe on Orbit develops solutions that help operators understand the orbital environment, assess risks in advance and make better-informed decisions.</p>
+          <p>A crowded orbit demands smarter decisions. We help operators anticipate risks and prevent collisions.</p>
           <a className="text-link" href="#tecnologia">Turning data into decisions <ArrowRight size={16} /></a>
         </div>
       </div>
       <div className="container metrics-row">
-        <div className="metric"><span className="metric-icon"><Radar /></span><div><strong>Monitor</strong><p>Track objects and trajectories in orbit.</p></div></div>
-        <div className="metric"><span className="metric-icon"><Activity /></span><div><strong>Anticipate</strong><p>Identify close approaches that require attention.</p></div></div>
-        <div className="metric"><span className="metric-icon"><ShieldCheck /></span><div><strong>Decide</strong><p>Support operational choices with reliable information.</p></div></div>
+        <div className="metric"><span className="metric-icon"><Radar /></span><div><strong>Monitor</strong><p>Track orbital objects.</p></div></div>
+        <div className="metric"><span className="metric-icon"><Activity /></span><div><strong>Anticipate</strong><p>Identify collision risks.</p></div></div>
+        <div className="metric"><span className="metric-icon"><ShieldCheck /></span><div><strong>Decide</strong><p>Support safer operations.</p></div></div>
       </div>
     </section>
   )
@@ -139,22 +143,86 @@ function TrackedObjects() {
 function Cosmos() {
   return (
     <section className="cosmos-section" id="cosmos">
-      <div className="cosmos-image"><div className="image-caption"><span className="caption-line" />ORBITAL ENVIRONMENT — OPERATIONAL VIEW</div></div>
+      <div className="cosmos-image">
+        <div className="image-caption">
+          <span className="caption-line" />
+          ORBITAL ENVIRONMENT — OPERATIONAL VIEW
+        </div>
+      </div>
+
       <div className="cosmos-content">
         <Eyebrow>Our platform</Eyebrow>
-        <div className="cosmos-wordmark"><span className="cosmos-symbol"><img src={logo} alt="Logo da empresa" width="30" /></span><span>COSMOS<small>Collision Safety Management Orbital System</small></span></div>
-        <h2>More context to act. <em>More confidence to decide.</em></h2>
-        <p>COSMOS is Safe on Orbit's platform for conjunction analysis and collision prevention support. It combines orbital data and predictive analysis to help teams understand close-approach events and assess possible courses of action.</p>
+
+        <div className="cosmos-wordmark">
+          <span className="cosmos-symbol">
+            <img src={logo} alt="Safe on Orbit" width="36" />
+          </span>
+
+          <span>
+            COSMOS
+            <small>
+              Collision Safety Management Orbital System
+            </small>
+          </span>
+        </div>
+
+        <h2>
+          More insight.
+          <em>Safer decisions.</em>
+        </h2>
+
+        <p>
+          COSMOS combines orbital data and predictive analytics
+          to assess risks and support collision avoidance.
+        </p>
+
         <ul className="check-list">
-          <li><span><ChevronRight size={16} /></span>Analysis of close approaches between space objects</li>
-          <li><span><ChevronRight size={16} /></span>Risk assessment to support operational decisions</li>
-          <li><span><ChevronRight size={16} /></span>Support for collision avoidance strategy analysis</li>
+          <li>
+            <span><ChevronRight size={16} /></span>
+            Conjunction analysis
+          </li>
+
+          <li>
+            <span><ChevronRight size={16} /></span>
+            Orbital risk assessment
+          </li>
+
+          <li>
+            <span><ChevronRight size={16} /></span>
+            Collision avoidance support
+          </li>
         </ul>
-        <a className="button button-primary" href={`mailto:${EMAIL}`}>Talk to our team <ArrowRight size={17} /></a>
-        <p className="fine-print">COSMOS supports decision-making. Maneuver assessment and execution remain the responsibility of satellite operators.</p>
+
+        <a className="button button-primary" href={`mailto:${EMAIL}`}>
+          Talk to our team <ArrowRight size={17} />
+        </a>
+
+        <p className="fine-print">
+          COSMOS supports decision-making. Maneuver assessment
+          and execution remain the responsibility of satellite
+          operators.
+        </p>
       </div>
     </section>
   )
+}
+
+function ProcessIllustration({ number }) {
+  return <svg className="process-illustration" viewBox="0 0 240 120" aria-hidden="true" fill="none">
+    {number === '01' ? <>
+      <circle cx="120" cy="60" r="38" fill="#eaf4f8" stroke="#b8d5e2" />
+      <g stroke="#b8d5e2"><ellipse cx="120" cy="60" rx="17" ry="38"/><ellipse cx="120" cy="60" rx="38" ry="17"/><path d="M82 60h76M120 22v76"/></g>
+      <g stroke="#009bc5"><ellipse cx="120" cy="60" rx="83" ry="24" transform="rotate(-25 120 60)" strokeDasharray="5 4"/><ellipse cx="120" cy="60" rx="78" ry="26" transform="rotate(25 120 60)"/></g>
+      <g className="process-orbit"><circle cx="194" cy="26" r="4" fill="#009bc5"/><circle cx="46" cy="94" r="3" fill="#009bc5"/></g>
+    </> : number === '02' ? <>
+      <g stroke="#c5dce6"><circle cx="120" cy="60" r="18"/><circle cx="120" cy="60" r="36"/><circle cx="120" cy="60" r="54"/><path d="M120 6v108M66 60h108"/></g>
+      <path className="process-sweep" d="M120 60V6A54 54 0 0 1 174 60Z" fill="#009bc5" opacity=".15"/>
+      <g stroke="#009bc5" strokeDasharray="5 4"><path d="M35 100Q120 0 205 55"/><path d="M35 20Q120 115 205 25"/></g><circle className="process-pulse" cx="120" cy="54" r="12" fill="#009bc5" opacity=".15"/><circle cx="120" cy="54" r="4" fill="#009bc5"/>
+    </> : <>
+      <rect x="42" y="12" width="156" height="96" rx="8" fill="#eaf4f8" stroke="#b8d5e2"/><path d="M56 36h128M56 60h128M56 84h128" stroke="#c5dce6"/>
+      <path className="process-chart" d="M56 86L80 65L102 73L126 43L150 52L182 25" stroke="#009bc5" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/><circle cx="182" cy="25" r="4" fill="#009bc5"/><circle cx="171" cy="85" r="12" fill="#009bc5"/><path d="M165 85l4 4 8-9" stroke="white" strokeWidth="2"/>
+    </>}
+  </svg>
 }
 
 function Technology() {
@@ -165,7 +233,7 @@ function Technology() {
   ]
   return <section className="section technology-section" id="tecnologia"><div className="container">
     <div className="tech-heading"><div><Eyebrow>Our approach</Eyebrow><h2>Orbital complexity.<br /><em>Operational clarity.</em></h2></div><p>From raw information to situational awareness: a data-driven approach to supporting safer space operations.</p></div>
-    <div className="process-grid">{items.map(item => <article className="process-card" key={item.number}><div className="process-top"><span>{item.number}</span><span className="process-icon">{item.icon}</span></div><h3>{item.title}</h3><p>{item.body}</p><div className="card-line" /></article>)}</div>
+    <div className="process-grid">{items.map(item => <article className="process-card" key={item.number}><div className="process-top"><span>{item.number}</span><span className="process-icon">{item.icon}</span></div><ProcessIllustration number={item.number} /><h3>{item.title}</h3><p>{item.body}</p><div className="card-line" /></article>)}</div>
   </div></section>
 }
 
@@ -203,5 +271,6 @@ function Footer() {
 }
 
 export default function App() {
+  useScrollReveal()
   return <><Header /><main><Hero /><Challenge /><TrackedObjects /><Cosmos /><Technology /><Impact /><Team /><Updates /><Contact /></main><Footer /></>
 }
